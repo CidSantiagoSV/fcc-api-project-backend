@@ -28,8 +28,8 @@ app.get("/api/hello", function (req, res) {
 app.get("/api/:date?", (req, res) => {
   
   const date = req.params['date'];
-  let ms = Date.now(date);
   let dateObject = new Date(date);
+  let ms = dateObject.getTime();
   let utc = dateObject.toUTCString();
 
   res.json(`unix:${ms}, utc:${utc}`);
