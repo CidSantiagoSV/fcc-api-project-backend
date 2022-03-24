@@ -34,29 +34,24 @@ app.get("/api/", (req, res) => {
     "utc": now.toUTCString()
   });
 });
-app.get("/api/:unix?", (req, res) => {
-  const unix = req.params.unix;
-  let dateObject = new Date();
-  const timeStamp = dateObject.setTime(unix * 1000);
-
-  if (dateObject == "Invalid Date") {
-    res.json({ error : "Invalid Date" });
-  } else {
-    res.json({
-      "unix": dateObject.getTime(),
-      "utc": dateObject.toUTCString()
-    });
-  }
-});
 
 app.get("/api/:date?", (req, res) => {
   console.log(req.params);
   const date = req.params.date;
   let dateObject = new Date(date);
 
+  if (date > 10000) {
+    timeStamp = dateObject.setTime(date);
+    res.json({
+      "unix": dateObject.getTime(),
+      "utc": dateObject.toUTCString()
+    });
+  }
   if (dateObject == "Invalid Date") {
-    res.json({ error : "Invalid Date" });
-  } else {
+    res.json({
+      error: "Invalid Date"
+    });
+  }else {
     res.json({
       "unix": dateObject.getTime(),
       "utc": dateObject.toUTCString()
