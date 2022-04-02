@@ -1,65 +1,29 @@
-// server.js
-// where your node app starts
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import {fileURLToPath} from 'url';
+import timeStampRoutes from './routes/timestamp.js';
+import headParserRoutes from './routes/headerparser.js';
+import shortUrl from './routes/urlshortener.js';
 
-// init project
-var express = require('express');
 var app = express();
 var port = process.env.PORT || 3000;
 
-// enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
-// so that your API is remotely testable by FCC 
-var cors = require('cors');
-app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
-
-// http://expressjs.com/en/starter/static-files.html
+app.use(cors({optionsSuccessStatus: 200}));
 app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
 
-// http://expressjs.com/en/starter/basic-routing.html
-app.get("/", function (req, res) {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.get('/', function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+app.use('/timestamp', timeStampRoutes);
+app.use('/headerparser', headParserRoutes);
+app.use('/shorturl', shortUrl);
 
-// your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
-});
-
-app.get("/api/", (req, res) => {
-  console.log(req.params);
-  const now = new Date();
-
-  res.json({
-    "unix": now.getTime(),
-    "utc": now.toUTCString()
-  });
-});
-
-app.get("/api/:date?", (req, res) => {
-  console.log(req.params);
-  const date = req.params.date;
-  let dateObject = new Date(date);
-
-  if (date > 10000) {
-    timeStamp = dateObject.setTime(date);
-    res.json({
-      "unix": dateObject.getTime(),
-      "utc": dateObject.toUTCString()
-    });
-  }
-  if (dateObject == "Invalid Date") {
-    res.json({
-      error: "Invalid Date"
-    });
-  }else {
-    res.json({
-      "unix": dateObject.getTime(),
-      "utc": dateObject.toUTCString()
-    });
-  }
-});
-
-// listen for requests :)
 var listener = app.listen(port, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
