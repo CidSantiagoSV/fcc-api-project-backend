@@ -12,7 +12,7 @@ export const getHeaderparser = (req, res) => {
 export const getHeaders = (req, res) => {
   res.json({
     "ipaddress": req.ip,
-    "language:": req.headers["accept-language"],
-    "software:": req.headers["user-agent"],
+    "language": req.headers["accept-language"],
+    "software": req.headers["user-agent"],
   })
 }
