@@ -1,5 +1,6 @@
 ﻿import path from 'path';
 import {fileURLToPath} from 'url';
+import { UrlShortener } from '../models/urlshortener.model.js';
 import bodyParser from 'body-parser';
 import dns from 'dns';
 
@@ -14,20 +15,15 @@ export const getUrlShortener = (req, res) => {
 
 export const postShortUrl = (req, res) => {
   const original_url = req.body.url;
-  const short_url = 1;
-  const options = {
-    family: 6,
-    hints: dns.ADDRCONFIG | dns.V4MAPPED,
-  };
-  dns.lookup(original_url, options, (err, address, family) =>
-    console.log('address: %j family: IPv%s', address, family));
-  options.all = true;
-  dns.lookup(original_url, options, (err, addresses) => {
-    if (err) {
-      console.log(err), addresses
-    }
-    console.log('addresses: %j', addresses)
-    console.log(req.body.url);
-    res.json({ original_url, short_url, addresses });
-  });
-}
+  const newUrl = new UrlShortener({
+    original_url
+  })
+
+  newUrl.save()
+    .then(() => res.json('User added!'))
+    .catch(err => res.status(400).json('Error: ' + err));
+};
+
+export const getShortUrl = (req, res) => {
+  res.send('Chegando la');
+};
