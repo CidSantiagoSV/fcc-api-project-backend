@@ -15,15 +15,20 @@ export const getUrlShortener = (req, res) => {
 
 export const postShortUrl = (req, res) => {
   const original_url = req.body.url;
+  let short_url = 0;
+
   const newUrl = new UrlShortener({
     original_url
   })
 
-  newUrl.save()
-    .then(() => res.json('User added!'))
-    .catch(err => res.status(400).json('Error: ' + err));
+  newUrl.save(function(err, data){
+    if(err)
+      return res.json({ error: 'invalid url' });
+    else
+      return res.json({ original_url, short_url });
+  })
 };
 
 export const getShortUrl = (req, res) => {
-  res.send('Chegando la');
+  res.redirect(200, 'www.google.com');
 };

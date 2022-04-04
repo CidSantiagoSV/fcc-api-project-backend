@@ -10,7 +10,7 @@ const urlSchema = new Schema({
     },
     short_url: {
         type: Number,
-        unique: true
+        default: 0,
     }
 });
 
