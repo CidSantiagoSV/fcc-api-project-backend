@@ -25,7 +25,11 @@ export const postShortUrl = (req, res) => {
     if(err)
       return res.json({ error: 'invalid url' });
     else
-      return res.json({ original_url, short_url });
+      return UrlShortener.findByIdAndUpdate({ original_url}, {$inc: { short_url: 1 }}, function (err, UrlShortener) {
+        if(err)
+          return next(err);
+        
+      })
   })
 };
 
