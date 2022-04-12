@@ -4,13 +4,13 @@ const Schema = mongoose.Schema;
 
 const urlSchema = new Schema({
     original_url: {
-        type: String,
-        required: true,
-        unique: true
+        type: String
+    },
+    long_url: {
+        type: String
     },
     short_url: {
-        type: Number,
-        default: 0,
+        type: String
     }
 });
 
