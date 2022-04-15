@@ -53,6 +53,9 @@ export const postShortUrl = async (req, res) => {
   }
 };
 
-export const getShortUrl = (req, res) => {
-  res.redirect(200, 'www.google.com');
+export const getShortUrl = async (req, res) => {
+  const url = await UrlShortener.findOne({
+    original_url: req.params.long_url
+  })
+  res.redirect(200, original_url);
 };
