@@ -16,30 +16,30 @@ export const getUrlShortener = (req, res) => {
 }
 
 export const postShortUrl = async (req, res) => {
-  const baseUrl = 'http:localhost:3000';
+  const baseUrl = 'http:localhost:3000/shorturl/api/shorturl';
 
-  const long_url = req.body.url;
+  const original_url = req.body.url;
   
   if (!validUrl.isUri(baseUrl)) {
     return res.json({ error: 'invalid url' });
   }
   
-  const original_url = shortid.generate();
+  const short_url = shortid.generate();
   
-  if (validUrl.isUri(long_url)) {
+  if (validUrl.isUri(original_url)) {
     try {
       let url = await UrlShortener.findOne({
-        long_url
+        original_url
       });
       if (url) {
         res.json(url)
       } else {
-        const short_url = baseUrl + '/' + original_url;
+        const long_url = baseUrl + '/' + short_url;
         
         const url = new UrlShortener({
-          long_url,
           original_url,
-          short_url
+          short_url,
+          long_url
         });
         await url.save()
         res.json(url)
@@ -53,9 +53,10 @@ export const postShortUrl = async (req, res) => {
   }
 };
 
-export const getShortUrl = async (req, res) => {
-  const url = await UrlShortener.findOne({
-    original_url: req.params.long_url
-  })
-  res.redirect(200, original_url);
-};
+export const getShortUrl = (req, res) => {
+  let generatedShortUrl = req.params.short_url;
+  UrlShortener.find({  short_url: generatedShortUrl  }).then(function(foundUrl){
+    let urlRedirect = foundUrl[0];
+    res.redirect(urlRedirect.original_url);
+  });
+}
