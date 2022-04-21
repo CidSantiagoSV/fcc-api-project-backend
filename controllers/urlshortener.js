@@ -26,24 +26,20 @@ export const postShortUrl = async (req, res) => {
   const short_url = shortid.generate();
   
   if (validUrl.isUri(original_url)) {
-    try {
-      let url = await UrlShortener.findOne({
-        original_url
+    let url = await UrlShortener.findOne({
+      original_url
+    });
+    if (url) {
+      res.json(url)
+    } else {
+      const long_url = absolutePath + short_url;
+      const url = new UrlShortener({
+        original_url,
+        short_url,
+        long_url
       });
-      if (url) {
-        res.json(url)
-      } else {
-        const long_url = absolutePath + short_url;
-        const url = new UrlShortener({
-          original_url,
-          short_url,
-          long_url
-        });
-        await url.save()
-        res.json(url)
-      }
-    } catch (err) {
-      res.status(500).json('Server Error');
+      await url.save()
+      res.json(url)
     }
   } else {
     res.status(401).json('Invalid longUrl');
