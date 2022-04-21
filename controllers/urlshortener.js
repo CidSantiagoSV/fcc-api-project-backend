@@ -16,10 +16,10 @@ export const getUrlShortener = (req, res) => {
 }
 
 export const postShortUrl = async (req, res) => {
-  const baseUrl = 'http:localhost:3000/shorturl/api/shorturl';
+  let absolutePath = path.normalize(__dirname + '/..');
   const original_url = req.body.url;
   
-  if (!validUrl.isUri(baseUrl)) {
+  if (!validUrl.isUri(original_url)) {
     return res.json({ error: 'invalid url' });
   }
   
@@ -33,7 +33,7 @@ export const postShortUrl = async (req, res) => {
       if (url) {
         res.json(url)
       } else {
-        const long_url = baseUrl + '/' + short_url;
+        const long_url = absolutePath + short_url;
         const url = new UrlShortener({
           original_url,
           short_url,
