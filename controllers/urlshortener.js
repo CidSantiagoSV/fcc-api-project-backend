@@ -32,11 +32,9 @@ export const postShortUrl = async (req, res) => {
     if (url) {
       res.json(url)
     } else {
-      const long_url = absolutePath + short_url;
       const url = new UrlShortener({
         original_url,
-        short_url,
-        long_url
+        short_url
       });
       url.save()
       res.json(url)
