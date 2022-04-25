@@ -16,31 +16,35 @@ export const getUrlShortener = (req, res) => {
 }
 
 export const postShortUrl = async (req, res) => {
-  let absolutePath = path.normalize(__filename + '/..');
-  const original_url = req.body.url;
-  
-  if (!validUrl.isUri(original_url)) {
-    return res.json({ error: 'invalid url' });
-  }
-  
-  const short_url = shortid.generate();
-  
-  if (validUrl.isUri(original_url)) {
-    let url = await UrlShortener.findOne({
-      original_url
-    });
-    if (url) {
-      res.json(url)
-    } else {
-      const url = new UrlShortener({
-        original_url,
-        short_url
-      });
-      url.save()
-      res.json(url)
+  try {
+    const original_url = req.body.url;
+    
+    if (!validUrl.isUri(original_url)) {
+      return res.json({ error: 'invalid url' });
     }
-  } else {
-    res.status(401).json('Invalid Url');
+    const short_url = shortid.generate();
+    
+    if (validUrl.isUri(original_url)) {
+      let url = await UrlShortener.findOne({
+        original_url
+      });
+      if (url) {
+        res.json(url)
+      } else {
+        const url = new UrlShortener({
+          original_url,
+          short_url
+        });
+        url.save()
+        res.json(url)
+      }
+    } else {
+      res.status(401).json('Invalid Url');
+    }
+  }
+  catch (err) {
+    console.error(err)
+    res.status(500).json('Server Error')
   }
 };
 
