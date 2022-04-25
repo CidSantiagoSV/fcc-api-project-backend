@@ -15,8 +15,8 @@ export const getUrlShortener = (req, res) => {
   res.sendFile(absolutePath + '/views/urlshortener.html');
 }
 
-export const postShortUrl = (req, res) => {
-  let absolutePath = path.normalize(__dirname + '/..');
+export const postShortUrl = async (req, res) => {
+  let absolutePath = path.normalize(__filename + '/..');
   const original_url = req.body.url;
   
   if (!validUrl.isUri(original_url)) {
@@ -26,7 +26,7 @@ export const postShortUrl = (req, res) => {
   const short_url = shortid.generate();
   
   if (validUrl.isUri(original_url)) {
-    let url = UrlShortener.findOne({
+    let url = await UrlShortener.findOne({
       original_url
     });
     if (url) {
@@ -42,7 +42,7 @@ export const postShortUrl = (req, res) => {
       res.json(url)
     }
   } else {
-    res.status(401).json('Invalid longUrl');
+    res.status(401).json('Invalid Url');
   }
 };
 
