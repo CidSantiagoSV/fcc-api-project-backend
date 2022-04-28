@@ -14,7 +14,7 @@ export const getUrlShortener = (req, res) => {
   
   res.sendFile(absolutePath + '/views/urlshortener.html');
 }
-
+/*
 export const postShortUrl = async (req, res) => {
   const original_url = req.body.url;
   const short_url = shortid.generate();
@@ -30,7 +30,8 @@ export const postShortUrl = async (req, res) => {
     });
   });
 }
-/*  
+*/
+export const postShortUrl = async (req, res) => {  
   try {
     const original_url = req.body.url;
     
@@ -62,7 +63,7 @@ export const postShortUrl = async (req, res) => {
     res.status(500).json('Server Error')
   }
 };
-*/
+
 export const getShortUrl = (req, res) => {
   let generatedShortUrl = req.params.short_url;
   UrlShortener.find({  short_url: generatedShortUrl  }).then(function(foundUrl){
