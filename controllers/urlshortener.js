@@ -14,33 +14,16 @@ export const getUrlShortener = (req, res) => {
   
   res.sendFile(absolutePath + '/views/urlshortener.html');
 }
-/*
-export const postShortUrl = async (req, res) => {
-  const original_url = req.body.url;
-  const short_url = shortid.generate();
-  const url = new UrlShortener({
-    original_url,
-    short_url
-  });
-  url.save((err, doc) => {
-    if (err) return console.error(err);
-    res.json({
-      "original_url": url.original_url,
-      "short_url": url.short_url
-    });
-  });
-}
-*/
+
 export const postShortUrl = async (req, res) => {  
-  try {
-    const original_url = req.body.url;
-    
-    if (!validUrl.isUri(original_url)) {
-      return res.json({ error: 'invalid url' });
-    }
-    const short_url = shortid.generate();
-    
-    if (validUrl.isUri(original_url)) {
+  const original_url = req.body.url;
+  if (!validUrl.isUri(original_url)) {
+    return res.json({ error: 'invalid url' });
+  }
+  const short_url = shortid.generate();
+  
+  if (validUrl.isUri(original_url)) {
+    try {
       let url = await UrlShortener.findOne({
         original_url
       });
@@ -54,13 +37,13 @@ export const postShortUrl = async (req, res) => {
         url.save()
         res.json(url)
       }
-    } else {
-      res.status(401).json('Invalid Url');
     }
-  }
-  catch (err) {
-    console.error(err)
-    res.status(500).json('Server Error')
+    catch (err) {
+      console.error(err)
+      res.status(500).json('Server Error')
+    }
+  } else {
+    return res.json({ error: 'invalid url' });
   }
 };
 
